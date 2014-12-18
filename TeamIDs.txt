@@ -1,0 +1,31 @@
+//For goldsheet.org
+Atlanta 091
+Boston 092
+Broolyn 104
+Charlotte 152
+Chicago 093
+Cleveland 094
+Dallas 095
+Denver 096
+Detroit 097
+Garden State 098
+Houston 099
+Indiana 100
+Clippers 101
+Lakers 102
+Memphis 119
+Miami 115
+Milwaukee 103
+Minnesota 116
+New Orleans 114
+New York 105
+OKC 111
+Orlanda 117
+Philadelphia 106
+Phoenix 107
+Portland 108
+Sacramento 109
+San Antonio 110
+Toronto 118
+Utah 112
+Washington 113
