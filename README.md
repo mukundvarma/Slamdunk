@@ -1,7 +1,7 @@
 Slamdunk
 ========
 
-To run bballRefAPI.py:
+To run BBallRefAPI.py:
 
    need python 2.7, requests module, and BeautifulSoup
 
@@ -21,7 +21,7 @@ To run bballRefAPI.py:
 
    After properly installed, can grab all team game scores for year arguments w/:
 
-     python bballRefAPI.py <yearStart> <yearEnd>
+     python BBallRefAPI.py <yearStart> <yearEnd>
 
 To run makeBBallTrees.C:
 
