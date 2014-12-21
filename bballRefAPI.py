@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import bballRefID
+import sys
 
 #this func. blatantly stolen from basketcrawler
 def getSoupFromURL(url, supressOutput=True):
@@ -38,9 +39,14 @@ def writeCSVFile(teamName, year):
 
         
   outFile.close()
+  return
+
+if(len(sys.argv) == 1):
+    print "Usage: python bballRefAPI.py <num>"
+    sys.exit()
 
 for team in bballRefID.teams:
-    for num in range(0,3):
+    for num in range(0,int(sys.argv[1])):
         writeCSVFile(team, 2014-num)
 
 
