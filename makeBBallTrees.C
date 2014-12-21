@@ -1,22 +1,22 @@
 #include <fstream>
 #include <vector>
-#include "BBallStatTree.h"
+#include "BBallTrees.h"
 
-int makeBBallStatTree(const std::string fList , const std::string outName);
+int makeBBallTrees(const std::string fList , const std::string outName);
 
 int main(int argc, char* argv[])
 {
   if(argc != 3){
-    std::cout << "usage: makeBBallStatTree <inputList> <outName>" << std::endl;
+    std::cout << "usage: makeBBallTrees <inputList> <outName>" << std::endl;
     return 1;
   }
 
   int jobStatus = -1;
-  jobStatus = makeBBallStatTree(argv[1], argv[2]);
+  jobStatus = makeBBallTrees(argv[1], argv[2]);
   return jobStatus;
 }
 
-int makeBBallStatTree(const std::string fList, const std::string outName)
+int makeBBallTrees(const std::string fList, const std::string outName)
 {
   std::string buffer;
   std::vector<std::string> listOfFiles;
@@ -39,11 +39,11 @@ int makeBBallStatTree(const std::string fList, const std::string outName)
   std::cout << "FileList Loaded." << std::endl;
 
   TFile* outFile_p = new TFile(Form("%s.root", outName.c_str()), "UPDATE");
-  InitStatTree();
+  InitTrees();
 
   for(Int_t fileIter = 0; fileIter < (Int_t)(listOfFiles.size()); fileIter++){
-    if(fileIter%10 == 0) std::cout << "File Number: " << fileIter << std::endl;
-    InitStatVar();
+    if(fileIter%1 == 0) std::cout << "File Number: " << fileIter << std::endl;
+    InitVar();
 
     std::string fileStr = listOfFiles[fileIter];
     const std::string cullString = "/";
@@ -96,7 +96,7 @@ int makeBBallStatTree(const std::string fList, const std::string outName)
   }
 
   statTree_p->Write("", TObject::kOverwrite);
-  CleanupStatTree();
+  CleanupTrees();
   outFile_p->Close();
   delete outFile_p;
 
