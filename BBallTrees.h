@@ -32,11 +32,13 @@ Int_t win_[maxGames];
 Int_t loss_[maxGames];
 
 Float_t ptForPer_[maxGames];
+Float_t ptForPerErr_[maxGames];
 Float_t ptVsPer_[maxGames];
+Float_t ptVsPerErr_[maxGames];
 
-void SetBranches()
+void SetBBallBranches()
 {
-  //Set stat tree branches
+  std::cout << "Setting stat tree branches..." << std::endl;
 
   statTree_p->Branch("teamStr", &teamStr_);
   statTree_p->Branch("teamNum", &teamNum_, "teamNum/I");
@@ -51,18 +53,20 @@ void SetBranches()
   statTree_p->Branch("ptVs", ptVs_, "ptVs[nGames]/I");
 
   statTree_p->Branch("ptForPer", ptForPer_, "ptForPer[nGames]/F");
+  statTree_p->Branch("ptForPerErr", ptForPerErr_, "ptForPerErr[nGames]/F");
   statTree_p->Branch("ptVsPer", ptVsPer_, "ptVsPer[nGames]/F");
+  statTree_p->Branch("ptVsPerErr", ptVsPerErr_, "ptVsPerErr[nGames]/F");
 
-  //Set book tree branches
+  std::cout << "Setting book tree branches..." << std::endl;
 
   bookTree_p->Branch("nGames", &nGames_, "nGames/I");
 
   return;
 }
 
-void GetBranches()
+void GetBBallBranches()
 {
-  //Get stat tree branches
+  std::cout << "Getting stat tree branches..." << std::endl;
 
   statTree_p->SetBranchAddress("teamNum", &teamNum_);
   statTree_p->SetBranchAddress("year", &year_);
@@ -75,28 +79,30 @@ void GetBranches()
   statTree_p->SetBranchAddress("ptVs", ptVs_);
 
   statTree_p->SetBranchAddress("ptForPer", ptForPer_);
+  statTree_p->SetBranchAddress("ptForPerErr", ptForPerErr_);
   statTree_p->SetBranchAddress("ptVsPer", ptVsPer_);
+  statTree_p->SetBranchAddress("ptVsPerErr", ptVsPerErr_);
 
-  //Get book tree branches
+  std::cout << "Getting book tree branches..." << std::endl;
 
   bookTree_p->Branch("nGames", &nGames_);
 
   return;
 }
 
-void InitTrees()
+void InitBBallTrees()
 {
   std::cout << "Init Trees" << std::endl;
 
   statTree_p = new TTree("statTree_p", "statTree_p");
   bookTree_p = new TTree("bookTree_p", "bookTree_p");
-  SetBranches();
+  SetBBallBranches();
 
   return;
 }
 
 
-void FillTrees()
+void FillBBallTrees()
 {
   statTree_p->Fill();
   bookTree_p->Fill();
@@ -104,7 +110,7 @@ void FillTrees()
 }
 
 
-void WriteTrees(TFile* outFile_p)
+void WriteBBallTrees(TFile* outFile_p)
 {
   outFile_p->cd();
   statTree_p->Write("", TObject::kOverwrite);
@@ -114,25 +120,25 @@ void WriteTrees(TFile* outFile_p)
 }
 
 
-void CleanupTrees()
+void CleanupBBallTrees()
 {
   if(statTree_p != 0) delete statTree_p;
   if(bookTree_p != 0) delete bookTree_p;
   return;
 }
 
-void GetTrees(TFile* inFile_p)
+void GetBBallTrees(TFile* inFile_p)
 {
   std::cout << "Get Trees" << std::endl;
 
-  statTree_p = (TTree*)inFile_p->Get("statTree");
-  bookTree_p = (TTree*)inFile_p->Get("bookTree");
-  GetBranches();
+  statTree_p = (TTree*)inFile_p->Get("statTree_p");
+  bookTree_p = (TTree*)inFile_p->Get("bookTree_p");
+  GetBBallBranches();
 
   return;
 }
 
-void GetTreesEntry(Int_t entryNum)
+void GetBBallTreesEntry(Int_t entryNum)
 {
   statTree_p->GetEntry(entryNum);
   bookTree_p->GetEntry(entryNum);
@@ -140,7 +146,7 @@ void GetTreesEntry(Int_t entryNum)
 }
 
 
-void InitVar()
+void InitBBallVar()
 {
   teamStr_ = "";
   teamNum_ = -1;

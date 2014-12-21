@@ -1,6 +1,7 @@
 #include <fstream>
 #include <vector>
 #include "BBallTrees.h"
+#include "getMean.h"
 
 int makeBBallTrees(const std::string fList , const std::string outName);
 
@@ -39,11 +40,11 @@ int makeBBallTrees(const std::string fList, const std::string outName)
   std::cout << "FileList Loaded." << std::endl;
 
   TFile* outFile_p = new TFile(Form("%s.root", outName.c_str()), "UPDATE");
-  InitTrees();
+  InitBBallTrees();
 
   for(Int_t fileIter = 0; fileIter < (Int_t)(listOfFiles.size()); fileIter++){
     if(fileIter%1 == 0) std::cout << "File Number: " << fileIter << std::endl;
-    InitVar();
+    InitBBallVar();
 
     std::string fileStr = listOfFiles[fileIter];
     const std::string cullString = "/";
@@ -75,21 +76,17 @@ int makeBBallTrees(const std::string fList, const std::string outName)
       std::getline(csvFile, outVal, ',');
       ptFor_[nGames_] = Int_t(std::atoi(outVal.c_str()));
 
-      ptForPer_[nGames_] = 0;
       for(Int_t ptIter = 0; ptIter < nGames_+1; ptIter++){
-	ptForPer_[nGames_] += ptFor_[ptIter];
+	getMean(ptIter+1, ptFor_, ptForPer_[ptIter], ptForPerErr_[ptIter]);
       }
-      ptForPer_[nGames_]/=(nGames_+1);
 
       std::getline(csvFile, outVal, ',');
 
       ptVs_[nGames_] = Int_t(std::atoi(outVal.c_str()));
 
-      ptVsPer_[nGames_] = 0;
       for(Int_t ptIter = 0; ptIter < nGames_+1; ptIter++){
-	ptVsPer_[nGames_] += ptVs_[ptIter];
+	getMean(ptIter+1, ptVs_, ptVsPer_[ptIter], ptVsPerErr_[ptIter]);
       }
-      ptVsPer_[nGames_]/=(nGames_+1);
 
       if(nGames_ == 0){
 	win_[nGames_] = 0;
@@ -106,11 +103,11 @@ int makeBBallTrees(const std::string fList, const std::string outName)
       nGames_++;
     }
 
-    FillTrees();
+    FillBBallTrees();
   }
 
-  WriteTrees(outFile_p);
-  CleanupTrees();
+  WriteBBallTrees(outFile_p);
+  CleanupBBallTrees();
   outFile_p->Close();
   delete outFile_p;
 
