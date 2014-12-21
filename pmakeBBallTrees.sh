@@ -6,7 +6,7 @@ then
   exit 1
 fi
 
-now="bballTreeJob_$(date +"%m_%d_%Y__%H_%M_%S")"
+now="bballTreesJob_$(date +"%m_%d_%Y__%H_%M_%S")"
 mkdir $now
 mkdir -p $3
 

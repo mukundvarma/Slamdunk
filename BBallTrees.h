@@ -60,13 +60,14 @@ Int_t teamNum_;
 Int_t year_;
 
 Int_t nGames_;
+Int_t teamNumVs_[maxGames];
 Int_t ptFor_[maxGames];
-Int_t ptAgst_[maxGames];
+Int_t ptVs_[maxGames];
 Int_t win_[maxGames];
 Int_t loss_[maxGames];
 
 Float_t ptForPer_[maxGames];
-Float_t ptAgstPer_[maxGames];
+Float_t ptVsPer_[maxGames];
 
 void SetBranches()
 {
@@ -78,13 +79,14 @@ void SetBranches()
 
   statTree_p->Branch("nGames", &nGames_, "nGames/I");
 
+  statTree_p->Branch("teamNumVs", teamNumVs_, "teamNumVs[nGames]/I");
   statTree_p->Branch("win", win_, "win[nGames]/I");
   statTree_p->Branch("loss", loss_, "loss[nGames]/I");
   statTree_p->Branch("ptFor", ptFor_, "ptFor[nGames]/I");
-  statTree_p->Branch("ptAgst", ptAgst_, "ptAgst[nGames]/I");
+  statTree_p->Branch("ptVs", ptVs_, "ptVs[nGames]/I");
 
   statTree_p->Branch("ptForPer", ptForPer_, "ptForPer[nGames]/F");
-  statTree_p->Branch("ptAgstPer", ptAgstPer_, "ptAgstPer[nGames]/F");
+  statTree_p->Branch("ptVsPer", ptVsPer_, "ptVsPer[nGames]/F");
 
   //Set book tree branches
 
@@ -101,13 +103,14 @@ void GetBranches()
   statTree_p->SetBranchAddress("year", &year_);
 
   statTree_p->SetBranchAddress("nGames", &nGames_);
+  statTree_p->SetBranchAddress("teamNumVs", teamNumVs_);
   statTree_p->SetBranchAddress("win", win_);
   statTree_p->SetBranchAddress("loss", loss_);
   statTree_p->SetBranchAddress("ptFor", ptFor_);
-  statTree_p->SetBranchAddress("ptAgst", ptAgst_);
+  statTree_p->SetBranchAddress("ptVs", ptVs_);
 
   statTree_p->SetBranchAddress("ptForPer", ptForPer_);
-  statTree_p->SetBranchAddress("ptAgstPer", ptAgstPer_);
+  statTree_p->SetBranchAddress("ptVsPer", ptVsPer_);
 
   //Get book tree branches
 

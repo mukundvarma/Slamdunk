@@ -70,6 +70,9 @@ int makeBBallTrees(const std::string fList, const std::string outName)
       std::getline(csvFile, outVal, ',');
       if(csvFile.eof()) break;
 
+      teamNumVs_[nGames_] = Int_t(std::atoi(outVal.c_str()));
+
+      std::getline(csvFile, outVal, ',');
       ptFor_[nGames_] = Int_t(std::atoi(outVal.c_str()));
 
       ptForPer_[nGames_] = 0;
@@ -80,22 +83,33 @@ int makeBBallTrees(const std::string fList, const std::string outName)
 
       std::getline(csvFile, outVal, ',');
 
-      ptAgst_[nGames_] = Int_t(std::atoi(outVal.c_str()));
+      ptVs_[nGames_] = Int_t(std::atoi(outVal.c_str()));
 
-      ptAgstPer_[nGames_] = 0;
+      ptVsPer_[nGames_] = 0;
       for(Int_t ptIter = 0; ptIter < nGames_+1; ptIter++){
-	ptAgstPer_[nGames_] += ptAgst_[ptIter];
+	ptVsPer_[nGames_] += ptVs_[ptIter];
       }
-      ptAgstPer_[nGames_]/=(nGames_+1);
+      ptVsPer_[nGames_]/=(nGames_+1);
+
+      if(nGames_ == 0){
+	win_[nGames_] = 0;
+	loss_[nGames_] = 0;
+      }
+      else{
+	win_[nGames_] = win_[nGames_-1];
+	loss_[nGames_] = loss_[nGames_-1];
+      }
+      if(ptFor_[nGames_] > ptVs_[nGames_]) win_[nGames_]++;
+      else loss_[nGames_]++;
 
       std::getline(csvFile, outVal);
       nGames_++;
     }
 
-    statTree_p->Fill();
+    FillTrees();
   }
 
-  statTree_p->Write("", TObject::kOverwrite);
+  WriteTrees(outFile_p);
   CleanupTrees();
   outFile_p->Close();
   delete outFile_p;
