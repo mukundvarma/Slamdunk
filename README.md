@@ -16,3 +16,15 @@ To run bballRefAPI.py:
 
    After properly installed, can grab all team game scores for listed number of years [2014 - (<num> - 1):2014] w/
      python bballRefAPI.py <num>
+
+To run makeBBallStatTree.C:
+   need root, figure it out
+
+   First run:
+      sh pmakeBBallStatTree.sh <inputCSVList> <outFileName> <outDir>
+            will create directory to run in, and executable
+   cd into created directory and run:
+      sh makeBBallStatTree.sh <inputCSVList> <outFileName> <outDir>
+      	 will create file <outFileName>.root containt statTree in <outDir>
+
+   statTree structure documented in header file BBallStatTree.h
