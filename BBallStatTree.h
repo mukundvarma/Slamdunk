@@ -52,7 +52,7 @@ TTree* statTree_p = 0;
 const Int_t nTeams = 30;
 const std::string teams[nTeams] = {"ATL", "BOS", "BRK", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW", "HOU", "IND", "LAC", "LAL", "MEM", "MIA", "MIL", "MIN", "NOH", "NYK", "OKC", "ORL", "PHI", "PHO", "POR", "SAC", "SAS", "TOR", "UTA", "WAS"};
 
-const Int_t maxGames = 100;
+const Int_t maxGames = 130;
 
 std::string teamStr_;
 Int_t teamNum_;
@@ -61,6 +61,9 @@ Int_t year_;
 Int_t nGames_;
 Int_t ptFor_[maxGames];
 Int_t ptAgst_[maxGames];
+
+Float_t ptForPer_[maxGames];
+Float_t ptAgstPer_[maxGames];
 
 void SetBranches()
 {
@@ -71,6 +74,9 @@ void SetBranches()
   statTree_p->Branch("nGames", &nGames_, "nGames/I");
   statTree_p->Branch("ptFor", ptFor_, "ptFor[nGames]/I");
   statTree_p->Branch("ptAgst", ptAgst_, "ptAgst[nGames]/I");
+
+  statTree_p->Branch("ptForPer", ptForPer_, "ptForPer[nGames]/F");
+  statTree_p->Branch("ptAgstPer", ptAgstPer_, "ptAgstPer[nGames]/F");
 
   return;
 }
@@ -84,6 +90,9 @@ void GetBranches()
   statTree_p->SetBranchAddress("nGames", &nGames_);
   statTree_p->SetBranchAddress("ptFor", ptFor_);
   statTree_p->SetBranchAddress("ptAgst", ptAgst_);
+
+  statTree_p->SetBranchAddress("ptForPer", ptForPer_);
+  statTree_p->SetBranchAddress("ptAgstPer", ptAgstPer_);
 
   return;
 }

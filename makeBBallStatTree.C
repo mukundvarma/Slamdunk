@@ -42,6 +42,7 @@ int makeBBallStatTree(const std::string fList, const std::string outName)
   InitStatTree();
 
   for(Int_t fileIter = 0; fileIter < (Int_t)(listOfFiles.size()); fileIter++){
+    if(fileIter%10 == 0) std::cout << "File Number: " << fileIter << std::endl;
     InitStatVar();
 
     std::string fileStr = listOfFiles[fileIter];
@@ -67,16 +68,25 @@ int makeBBallStatTree(const std::string fList, const std::string outName)
 
     while(true){
       std::getline(csvFile, outVal, ',');
-      std::cout << outVal << std::endl;
-
       if(csvFile.eof()) break;
 
       ptFor_[nGames_] = Int_t(std::atoi(outVal.c_str()));
 
+      ptForPer_[nGames_] = 0;
+      for(Int_t ptIter = 0; ptIter < nGames_+1; ptIter++){
+	ptForPer_[nGames_] += ptFor_[ptIter];
+      }
+      ptForPer_[nGames_]/=(nGames_+1);
+
       std::getline(csvFile, outVal, ',');
-      std::cout << outVal << std::endl;
 
       ptAgst_[nGames_] = Int_t(std::atoi(outVal.c_str()));
+
+      ptAgstPer_[nGames_] = 0;
+      for(Int_t ptIter = 0; ptIter < nGames_+1; ptIter++){
+	ptAgstPer_[nGames_] += ptAgst_[ptIter];
+      }
+      ptAgstPer_[nGames_]/=(nGames_+1);
 
       std::getline(csvFile, outVal);
       nGames_++;
