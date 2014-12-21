@@ -14,8 +14,8 @@ To run bballRefAPI.py:
    If modules properly installed, should be listed after calling:
      python -c "help('modules')"
 
-   After properly installed, can grab all team game scores for year arguments w/
-     python bballRefAPI.py <yearStart> <yearEnd>
+   After properly installed, can grab all team game scores for year arguments 
+     python bballRefAPI.py <num>
 
 To run makeBBallTrees.C:
    need root, figure it out
