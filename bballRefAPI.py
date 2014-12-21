@@ -3,7 +3,7 @@ import requests
 import bballRefID
 import sys
 
-#this func. blatantly stolen from basketcrawler
+#this func. blatantly stolen from basketcrawler, along w/ idea to use BeautifulSoup
 def getSoupFromURL(url, supressOutput=True):
     """
     This function grabs the url and returns and returns the BeautifulSoup object
@@ -19,6 +19,11 @@ def getSoupFromURL(url, supressOutput=True):
     return BeautifulSoup(r.text)
 
 
+def getTagStr(inStr):
+  start = inStr.index('>')
+  end = inStr[1:].index('<')
+  return inStr[start+1:end+1]
+
 def writeCSVFile(teamName, year):
   bball = getSoupFromURL('http://www.basketball-reference.com/teams/%s/%d_games.html' % (teamName, year), True)
   outFile = open('csvDir/%s%d.csv' % (teamName, year), "w")
@@ -26,28 +31,26 @@ def writeCSVFile(teamName, year):
   for thing in bball.findAll('tr'):
     counter = 0
     for thing2 in thing.findAll('td'):
+        if(counter == 7):
+            if(getTagStr(str(thing2)) == ''):
+                break
         if(counter == 9):
-            start = str(thing2).index('>')
-            end = str(thing2)[1:].index('<')
-            outFile.write(str(thing2)[start+1:end+1]+',')
+            outFile.write(getTagStr(str(thing2))+',')
         elif(counter == 10):
-            start = str(thing2).index('>')
-            end = str(thing2)[1:].index('<')
-            outFile.write(str(thing2)[start+1:end+1]+',\n')
+            outFile.write(getTagStr(str(thing2))+',\n')
             break
         counter += 1
-
         
   outFile.close()
   return
 
-if(len(sys.argv) == 1):
-    print "Usage: python bballRefAPI.py <num>"
+if(len(sys.argv) != 3):
+    print "Usage: python bballRefAPI.py <startYear> <endYear>"
     sys.exit()
 
 for team in bballRefID.teams:
-    for num in range(0,int(sys.argv[1])):
-        writeCSVFile(team, 2014-num)
+  for num in range(int(sys.argv[1]),int(sys.argv[2])+1):
+    writeCSVFile(team, num)
 
 
 #for thing in bball.findAll()

@@ -48,6 +48,7 @@ enum TeamNum{
 
 
 TTree* statTree_p = 0;
+TTree* bookTree_p = 0;
 
 const Int_t nTeams = 30;
 const std::string teams[nTeams] = {"ATL", "BOS", "BRK", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW", "HOU", "IND", "LAC", "LAL", "MEM", "MIA", "MIL", "MIN", "NOH", "NYK", "OKC", "ORL", "PHI", "PHO", "POR", "SAC", "SAS", "TOR", "UTA", "WAS"};
@@ -67,6 +68,8 @@ Float_t ptAgstPer_[maxGames];
 
 void SetBranches()
 {
+  //Set stat tree branches
+
   statTree_p->Branch("teamStr", &teamStr_);
   statTree_p->Branch("teamNum", &teamNum_, "teamNum/I");
   statTree_p->Branch("year", &year_, "year/I");
@@ -78,12 +81,17 @@ void SetBranches()
   statTree_p->Branch("ptForPer", ptForPer_, "ptForPer[nGames]/F");
   statTree_p->Branch("ptAgstPer", ptAgstPer_, "ptAgstPer[nGames]/F");
 
+  //Set book tree branches
+
+  bookTree_p->Branch("nGames", &nGames_, "nGames/I");
+
   return;
 }
 
 void GetBranches()
 {
-  //  statTree_p->SetBranchAddress("teamStr", &teamStr_);
+  //Get stat tree branches
+
   statTree_p->SetBranchAddress("teamNum", &teamNum_);
   statTree_p->SetBranchAddress("year", &year_);
 
@@ -94,14 +102,19 @@ void GetBranches()
   statTree_p->SetBranchAddress("ptForPer", ptForPer_);
   statTree_p->SetBranchAddress("ptAgstPer", ptAgstPer_);
 
+  //Get book tree branches
+
+  bookTree_p->Branch("nGames", &nGames_);
+
   return;
 }
 
-void InitStatTree()
+void InitTrees()
 {
-  std::cout << "Init Stat Tree" << std::endl;
+  std::cout << "Init Trees" << std::endl;
 
   statTree_p = new TTree("statTree", "statTree");
+  bookTree_p = new TTree("bookTree", "bookTree");
   SetBranches();
 
   return;
@@ -110,20 +123,30 @@ void InitStatTree()
 void CleanupStatTree()
 {
   if(statTree_p != 0) delete statTree_p;
+  if(bookTree_p != 0) delete bookTree_p;
   return;
 }
 
-void GetStatTree(TFile* inFile_p)
+void GetTrees(TFile* inFile_p)
 {
-  std::cout << "Get Stat Tree" << std::endl;
+  std::cout << "Get Trees" << std::endl;
 
   statTree_p = (TTree*)inFile_p->Get("statTree");
+  bookTree_p = (TTree*)inFile_p->Get("bookTree");
   GetBranches();
 
   return;
 }
 
-void InitStatVar()
+void GetTreeEntry(Int_t entryNum)
+{
+  statTree_p->GetEntry(entryNum);
+  bookTree_p->GetEntry(entryNum);
+  return;
+}
+
+
+void InitVar()
 {
   teamStr_ = "";
   teamNum_ = -1;
