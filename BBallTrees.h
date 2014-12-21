@@ -62,6 +62,8 @@ Int_t year_;
 Int_t nGames_;
 Int_t ptFor_[maxGames];
 Int_t ptAgst_[maxGames];
+Int_t win_[maxGames];
+Int_t loss_[maxGames];
 
 Float_t ptForPer_[maxGames];
 Float_t ptAgstPer_[maxGames];
@@ -75,6 +77,9 @@ void SetBranches()
   statTree_p->Branch("year", &year_, "year/I");
 
   statTree_p->Branch("nGames", &nGames_, "nGames/I");
+
+  statTree_p->Branch("win", win_, "win[nGames]/I");
+  statTree_p->Branch("loss", loss_, "loss[nGames]/I");
   statTree_p->Branch("ptFor", ptFor_, "ptFor[nGames]/I");
   statTree_p->Branch("ptAgst", ptAgst_, "ptAgst[nGames]/I");
 
@@ -96,6 +101,8 @@ void GetBranches()
   statTree_p->SetBranchAddress("year", &year_);
 
   statTree_p->SetBranchAddress("nGames", &nGames_);
+  statTree_p->SetBranchAddress("win", win_);
+  statTree_p->SetBranchAddress("loss", loss_);
   statTree_p->SetBranchAddress("ptFor", ptFor_);
   statTree_p->SetBranchAddress("ptAgst", ptAgst_);
 
@@ -113,12 +120,31 @@ void InitTrees()
 {
   std::cout << "Init Trees" << std::endl;
 
-  statTree_p = new TTree("statTree", "statTree");
-  bookTree_p = new TTree("bookTree", "bookTree");
+  statTree_p = new TTree("statTree_p", "statTree_p");
+  bookTree_p = new TTree("bookTree_p", "bookTree_p");
   SetBranches();
 
   return;
 }
+
+
+void FillTrees()
+{
+  statTree_p->Fill();
+  bookTree_p->Fill();
+  return;
+}
+
+
+void WriteTrees(TFile* outFile_p)
+{
+  outFile_p->cd();
+  statTree_p->Write("", TObject::kOverwrite);
+  bookTree_p->Write("", TObject::kOverwrite);
+
+  return;
+}
+
 
 void CleanupTrees()
 {
@@ -138,7 +164,7 @@ void GetTrees(TFile* inFile_p)
   return;
 }
 
-void GetTreeEntry(Int_t entryNum)
+void GetTreesEntry(Int_t entryNum)
 {
   statTree_p->GetEntry(entryNum);
   bookTree_p->GetEntry(entryNum);
