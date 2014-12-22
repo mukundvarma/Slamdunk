@@ -32,6 +32,10 @@ def convertTeamStr(inStr):
     return 'CHO'
   elif inStr == 'NOH':
     return 'NOP'
+  elif inStr == 'NOK':
+    return 'NOP'
+  elif inStr == 'SEA':
+    return 'OKC'
   else:
     return inStr
 
@@ -45,7 +49,14 @@ def getTeamStr(inStr):
 
 
 def writeCSVFile(teamName, year):
-  bball = getSoupFromURL('http://www.basketball-reference.com/teams/%s/%d_games.html' % (teamName, year), True)
+  teamSearchName = teamName
+  if teamSearchName == "OKC":
+    teamSearchName = "SEA"
+  elif teamSearchName == "NOP":
+    if year == 2006 or year == 2007:
+      teamSearchName = "NOK"
+
+  bball = getSoupFromURL('http://www.basketball-reference.com/teams/%s/%d_games.html' % (teamSearchName, year), True)
   outFile = open('csvDir/%s%d.csv' % (teamName, year), "w")
 
   for thing in bball.findAll('tr'):
