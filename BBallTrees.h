@@ -25,9 +25,15 @@ Int_t teamNum_;
 Int_t year_;
 
 Int_t nGames_;
+Int_t month_[maxGames];
+Int_t day_[maxGames];
+Bool_t isHome_[maxGames];
 Int_t teamNumVs_[maxGames];
+Long64_t gameID_[maxGames];
 Int_t ptFor_[maxGames];
 Int_t ptVs_[maxGames];
+Int_t ptDiff_[maxGames];
+Float_t ptDiffErr_[maxGames];
 Int_t win_[maxGames];
 Int_t loss_[maxGames];
 
@@ -35,6 +41,8 @@ Float_t ptForPer_[maxGames];
 Float_t ptForPerErr_[maxGames];
 Float_t ptVsPer_[maxGames];
 Float_t ptVsPerErr_[maxGames];
+Float_t ptDiffPer_[maxGames];
+Float_t ptDiffPerErr_[maxGames];
 
 void SetBBallBranches()
 {
@@ -46,16 +54,24 @@ void SetBBallBranches()
 
   statTree_p->Branch("nGames", &nGames_, "nGames/I");
 
+  statTree_p->Branch("month", month_, "month[nGames]/I");
+  statTree_p->Branch("day", day_, "day[nGames]/I");
+  statTree_p->Branch("isHome", isHome_, "isHome[nGames]/O");
   statTree_p->Branch("teamNumVs", teamNumVs_, "teamNumVs[nGames]/I");
+  statTree_p->Branch("gameID", gameID_, "gameID[nGames]/L");
   statTree_p->Branch("win", win_, "win[nGames]/I");
   statTree_p->Branch("loss", loss_, "loss[nGames]/I");
   statTree_p->Branch("ptFor", ptFor_, "ptFor[nGames]/I");
   statTree_p->Branch("ptVs", ptVs_, "ptVs[nGames]/I");
+  statTree_p->Branch("ptDiff", ptDiff_, "ptDiff[nGames]/I");
+  statTree_p->Branch("ptDiffErr", ptDiffErr_, "ptDiffErr[nGames]/F");
 
   statTree_p->Branch("ptForPer", ptForPer_, "ptForPer[nGames]/F");
   statTree_p->Branch("ptForPerErr", ptForPerErr_, "ptForPerErr[nGames]/F");
   statTree_p->Branch("ptVsPer", ptVsPer_, "ptVsPer[nGames]/F");
   statTree_p->Branch("ptVsPerErr", ptVsPerErr_, "ptVsPerErr[nGames]/F");
+  statTree_p->Branch("ptDiffPer", ptDiffPer_, "ptDiffPer[nGames]/F");
+  statTree_p->Branch("ptDiffPerErr", ptDiffPerErr_, "ptDiffPerErr[nGames]/F");
 
   std::cout << "Setting book tree branches..." << std::endl;
 
@@ -72,16 +88,24 @@ void GetBBallBranches()
   statTree_p->SetBranchAddress("year", &year_);
 
   statTree_p->SetBranchAddress("nGames", &nGames_);
+  statTree_p->SetBranchAddress("month", month_);
+  statTree_p->SetBranchAddress("day", day_);
+  statTree_p->SetBranchAddress("isHome", isHome_);
   statTree_p->SetBranchAddress("teamNumVs", teamNumVs_);
+  statTree_p->SetBranchAddress("gameID", gameID_);
   statTree_p->SetBranchAddress("win", win_);
   statTree_p->SetBranchAddress("loss", loss_);
   statTree_p->SetBranchAddress("ptFor", ptFor_);
   statTree_p->SetBranchAddress("ptVs", ptVs_);
+  statTree_p->SetBranchAddress("ptDiff", ptDiff_);
+  statTree_p->SetBranchAddress("ptDiffErr", ptDiffErr_);
 
   statTree_p->SetBranchAddress("ptForPer", ptForPer_);
   statTree_p->SetBranchAddress("ptForPerErr", ptForPerErr_);
   statTree_p->SetBranchAddress("ptVsPer", ptVsPer_);
   statTree_p->SetBranchAddress("ptVsPerErr", ptVsPerErr_);
+  statTree_p->SetBranchAddress("ptDiffPer", ptDiffPer_);
+  statTree_p->SetBranchAddress("ptDiffPerErr", ptDiffPerErr_);
 
   std::cout << "Getting book tree branches..." << std::endl;
 

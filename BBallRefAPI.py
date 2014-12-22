@@ -35,6 +35,9 @@ def convertTeamStr(inStr):
   else:
     return inStr
 
+
+
+
 def getTeamStr(inStr):
   for num in range(0, len(inStr)):
     if inStr[num:num+5] == 'teams':
@@ -48,8 +51,25 @@ def writeCSVFile(teamName, year):
   for thing in bball.findAll('tr'):
     counter = 0
     outTeamNum = -1
+    outMonth = -1;
+    outDay = -1;
+    outHome = -1;
+    
     for thing2 in thing.findAll('td'):
 
+        if(counter == 1):
+            for num in range(0, len(str(thing2))):
+                if str(thing2)[num:num+4] == "csk=":
+                    outMonth = str(thing2)[num+10:num+12]
+                    outDay = str(thing2)[num+13:num+15]
+
+        if(counter == 5):
+            start = str(thing2).index('>')
+            if str(thing2)[start+1:start+2] == '<':
+                outHome = 1
+            else:
+                outHome = 0
+            
         if(counter == 6):
             teamVsStr = getTeamStr(str(thing2))
             for num in range(0, len(BBallRefID.teams)):
@@ -60,6 +80,9 @@ def writeCSVFile(teamName, year):
             if(getTagStr(str(thing2)) == ''):
                 break
         if(counter == 9):
+            outFile.write(str(outMonth)+',')
+            outFile.write(str(outDay)+',')
+            outFile.write(str(outHome)+',')
             outFile.write(str(outTeamNum)+',')
             outFile.write(getTagStr(str(thing2))+',')
         elif(counter == 10):
@@ -78,6 +101,7 @@ for team in BBallRefID.teams:
   for num in range(int(sys.argv[1]),int(sys.argv[2])+1):
     writeCSVFile(team, num)
 
+#writeCSVFile("ATL", 2014)
 
 #for thing in bball.findAll()
  # outFile.write()

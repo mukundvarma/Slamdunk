@@ -12,8 +12,8 @@
 #include "TDatime.h"
 
 int makeBBallPlots(const std::string inName, const Int_t year);
-void makePerPlot(const std::string outName, const std::string plotName, TH1I* pt, TH1F* ptPer, TLine* mean);
-void TwoFormat(TH1* inHist1_p, TH1* inHist2_p);
+void makePerPlot(const std::string outName, const std::string plotName, TH1I* pt, TH1F* ptPer, TLine* mean, Bool_t isDiff);
+void TwoFormat(TH1* inHist1_p, TH1* inHist2_p, Bool_t isDiff);
 void niceTH1(TH1* uglyTH1, float max , float min, float ndivX, float ndivY, Int_t col = 1, Float_t size = 1, Int_t style = 20);
 void handsomeTH1(TH1 *a = 0, Int_t col = 1, Float_t size = 1, Int_t markerstyle = 20);
 void claverCanvasSaving(TCanvas* c, TString s,TString format = "gif");
@@ -47,8 +47,9 @@ int makeBBallPlots(const std::string inName, const Int_t year)
   GetBBallHists(inFile_p, year);
 
   for(Int_t iter = 0; iter < nTeams; iter++){
-    makePerPlot(outName, Form("%s%d_ptForPlot", teams[iter].c_str(), year), ptFor_h[iter], ptForPer_h[iter], meanPt_);
-    makePerPlot(outName, Form("%s%d_ptVsPlot", teams[iter].c_str(), year), ptVs_h[iter], ptVsPer_h[iter], meanPt_);
+    makePerPlot(outName, Form("%s%d_ptForPlot", teams[iter].c_str(), year), ptFor_h[iter], ptForPer_h[iter], meanTotPt_, false);
+    makePerPlot(outName, Form("%s%d_ptVsPlot", teams[iter].c_str(), year), ptVs_h[iter], ptVsPer_h[iter], meanTotPt_, false);
+    makePerPlot(outName, Form("%s%d_ptDiffPlot", teams[iter].c_str(), year), ptDiff_h[iter], ptDiffPer_h[iter], meanDiffPt_, true);
   }
 
   inFile_p->Close();
@@ -58,9 +59,9 @@ int makeBBallPlots(const std::string inName, const Int_t year)
 }
 
 
-void makePerPlot(const std::string outName, const std::string plotName, TH1I* pt, TH1F* ptPer, TLine* mean)
+void makePerPlot(const std::string outName, const std::string plotName, TH1I* pt, TH1F* ptPer, TLine* mean, Bool_t isDiff)
 {
-  TwoFormat(pt, ptPer);
+  TwoFormat(pt, ptPer, isDiff);
 
   TCanvas* plotCanvas_p = new TCanvas(Form("%s_c", plotName.c_str()), Form("%s_c", plotName.c_str()), 1*300, 1*350);
 
@@ -90,7 +91,7 @@ void makePerPlot(const std::string outName, const std::string plotName, TH1I* pt
   return;
 }
 
-void TwoFormat(TH1* inHist1_p, TH1* inHist2_p)
+void TwoFormat(TH1* inHist1_p, TH1* inHist2_p, Bool_t isDiff)
 {
   /*
   Float_t maxVal = inHist1_p->GetBinContent(inHist1_p->GetMaximumBin());
@@ -103,10 +104,11 @@ void TwoFormat(TH1* inHist1_p, TH1* inHist2_p)
   //  minVal -= TMath::Sqrt(minVal) + 1;
   //  if(minVal < 0) minVal = 0;
 
+  Int_t base = 100;
+  if(isDiff) base = 0;
 
-
-  niceTH1(inHist1_p, 150, 50, 505, 505, kRed+2, 0.5, 20);
-  niceTH1(inHist2_p, 150, 50, 505, 505, kBlue, 0.5, 21);
+  niceTH1(inHist1_p, base + 50, base - 50, 505, 505, kRed+2, 0.5, 20);
+  niceTH1(inHist2_p, base + 50, base - 50, 505, 505, kBlue, 0.5, 21);
 
   return;
 }

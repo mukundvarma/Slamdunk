@@ -43,6 +43,7 @@ int makeBBallHists(const std::string inName, const Int_t year)
 
   BookBBallHists(year);
   Float_t totPt = 0;
+  Float_t diffPt = 0;
   Float_t totNum = 0;
 
   for(Int_t jEntry = 0; jEntry < nEntries; jEntry++){
@@ -50,16 +51,18 @@ int makeBBallHists(const std::string inName, const Int_t year)
     if(year_ != year) continue;
 
     for(Int_t iter = 0; iter < 82; iter++){
-      totPt+= ptFor_[iter];
+      totPt += ptFor_[iter];
+      diffPt += ptDiff_[iter];
       totNum++;
     }
 
-    if(nGames_ < 82) FillBBallHists(teamNum_, nGames_, ptFor_, ptForPer_, ptForPerErr_, ptVs_, ptVsPer_, ptVsPerErr_);
-    else FillBBallHists(teamNum_, 82, ptFor_, ptForPer_, ptForPerErr_, ptVs_, ptVsPer_, ptVsPerErr_);
+    if(nGames_ < 82) FillBBallHists(teamNum_, nGames_, ptFor_, ptForPer_, ptForPerErr_, ptVs_, ptVsPer_, ptVsPerErr_, ptDiff_, ptDiffErr_, ptDiffPer_, ptDiffPerErr_);
+    else FillBBallHists(teamNum_, 82, ptFor_, ptForPer_, ptForPerErr_, ptVs_, ptVsPer_, ptVsPerErr_, ptDiff_, ptDiffErr_, ptDiffPer_, ptDiffPerErr_);
   }
   totPt/=totNum;
-  meanPt_ = new TLine(-0.5, totPt, 81.5, totPt);
-
+  diffPt/=totNum;
+  meanTotPt_ = new TLine(-0.5, totPt, 81.5, totPt);
+  meanDiffPt_ = new TLine(-0.5, diffPt, 81.5, diffPt);
   WriteBBallHists(outName, year);
   CleanupBBallHists();
   inFile_p->Close();

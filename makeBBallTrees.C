@@ -4,6 +4,7 @@
 #include "getMean.h"
 
 int makeBBallTrees(const std::string fList , const std::string outName);
+Long64_t getGameID(const Int_t year, const Int_t month, const Int_t day, const Int_t teamNum, const Int_t teamNumVs, const Bool_t isHome);
 
 int main(int argc, char* argv[])
 {
@@ -70,8 +71,18 @@ int makeBBallTrees(const std::string fList, const std::string outName)
     while(true){
       std::getline(csvFile, outVal, ',');
       if(csvFile.eof()) break;
+      month_[nGames_] = Int_t(std::atoi(outVal.c_str()));
 
+      std::getline(csvFile, outVal, ',');
+      day_[nGames_] = Int_t(std::atoi(outVal.c_str()));
+
+      std::getline(csvFile, outVal, ',');
+      isHome_[nGames_] = Bool_t(std::atoi(outVal.c_str()));
+
+      std::getline(csvFile, outVal, ',');
       teamNumVs_[nGames_] = Int_t(std::atoi(outVal.c_str()));
+
+      gameID_[nGames_] = getGameID(year_, month_[nGames_], day_[nGames_], teamNum_, teamNumVs_[nGames_], isHome_[nGames_]);
 
       std::getline(csvFile, outVal, ',');
       ptFor_[nGames_] = Int_t(std::atoi(outVal.c_str()));
@@ -81,7 +92,6 @@ int makeBBallTrees(const std::string fList, const std::string outName)
       }
 
       std::getline(csvFile, outVal, ',');
-
       ptVs_[nGames_] = Int_t(std::atoi(outVal.c_str()));
 
       for(Int_t ptIter = 0; ptIter < nGames_+1; ptIter++){
@@ -99,6 +109,13 @@ int makeBBallTrees(const std::string fList, const std::string outName)
       if(ptFor_[nGames_] > ptVs_[nGames_]) win_[nGames_]++;
       else loss_[nGames_]++;
 
+      ptDiff_[nGames_] = ptFor_[nGames_] - ptVs_[nGames_];
+      ptDiffErr_[nGames_] = TMath::Sqrt(ptFor_[nGames_] + ptVs_[nGames_]);
+
+      for(Int_t ptIter = 0; ptIter < nGames_+1; ptIter++){
+        getMean(ptIter+1, ptDiff_, ptDiffPer_[ptIter], ptDiffPerErr_[ptIter]);
+      }
+
       std::getline(csvFile, outVal);
       nGames_++;
     }
@@ -112,4 +129,15 @@ int makeBBallTrees(const std::string fList, const std::string outName)
   delete outFile_p;
 
   return 0;
+}
+
+
+Long64_t getGameID(const Int_t year, const Int_t month, const Int_t day, const Int_t teamNum, const Int_t teamNumVs, const Bool_t isHome)
+{
+  Long_t gameID = (year - 2000)*100000000 + month*1000000 + day*10000;  
+
+  if(isHome) gameID += teamNum*100 + teamNumVs*1;
+  else gameID += teamNumVs*100 + teamNum*1;
+
+  return gameID;
 }
