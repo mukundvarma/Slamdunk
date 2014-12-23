@@ -37,7 +37,9 @@ def getDateLines(year, month, day):
   counter = 0
   for thing in bball.findAll('tr'):
     if counter == 3:
-      if str(thing.findAll('b')) != "<b> National Basketball Association </b>":
+      if str(thing.findAll('b')) != "[<b> National Basketball Association </b>]":
+        print str(thing.findAll('b'))
+        print "Not the NBA. Break."
         break
 
     if counter < 4:
