@@ -20,6 +20,27 @@ def getSoupFromURL(url, supressOutput=True):
     return BeautifulSoup(r.text)
 
 
+def getCorrDate(year, month, day):
+  if day > 1:
+    return 100000000*(year - 2000) + 1000000*month + 10000*(day - 1)
+  else:
+    if month == 1:
+      month = 12
+    else:
+      month -= 1
+    if month == 2:
+      if year%4 == 0:
+        day = 29
+      else:
+        day = 28
+    elif month == 9 or month == 11 or month == 4 or month == 6:
+      day = 30
+    else:
+      day = 31
+
+  return 100000000*(year - 2000) + 1000000*month + 10000*day   
+
+
 def getDateLines(year, month, day):
   tempYear = year
   if month > 6: 
@@ -71,7 +92,7 @@ def getDateLines(year, month, day):
               OU = str(thing3)[start+1:end+1]
           counter3 += 1
       counter2 += 1
-    outFile.write(str((year - 2000)*100000000 + month*1000000 + day*10000 + 100*homeNum + 1*awayNum) + "," + OU + "," + Odds + "\n")
+    outFile.write(str(getCorrDate(year,month,day) + 100*homeNum + 1*awayNum) + "," + OU + "," + Odds + "\n")
  
   outFile.close()
 
@@ -88,16 +109,16 @@ if(startYear > endYear):
   sys.exit()
 
 years = range(startYear, endYear + 1)
-months = [12]
-#days = [21]
-#months = [9, 10, 11, 12, 1, 2, 3, 4, 5, 6]
-days = range(1, 32)
+months = [10, 11, 12, 1, 2, 3, 4, 5, 6]
+days = range(1,32)
 
-cutDay = datetime.date.today() + datetime.timedelta(days=1)
+startMonths = { 2005:11, 2006:11, 2007:10, 2008:10, 2009:10, 2010:10, 2011:10, 2012:10, 2013:10, 2014:10, 2015:10}
+startDays = { 2005:2, 2006:1, 2007:31, 2008:30, 2009:28, 2010:27, 2011:26, 2012:25, 2013:30, 2014:29, 2015:28}
 
-cutYear = cutDay.year
-cutMonth = cutDay.month
-cutDay = cutDay.day
+cut = datetime.date.today() + datetime.timedelta(days=1)
+cutYear = cut.year
+cutMonth = cut.month
+cutDay = cut.day
 
 if cutMonth > 6:
   cutYear += 1
@@ -108,21 +129,23 @@ for year in years:
 for year in years:
   for month in months:
     for day in days:
+
+      if month == startMonths[year] and day < startDays[year]:
+        continue
+
       if year == cutYear and month == cutMonth and day == cutDay:
         print "Hit cut date. Exit."
         sys.exit()
 
+      if month == 2:
+        if day > 28 and year%4 != 0:
+          continue
+        elif day > 29:
+          continue
+
+      if month == 4 or month == 6 or month == 9 or month == 11:
+        if day > 30:
+          continue
+
       getDateLines(year, month, day)
 
-
-#getDateLines(2014, 12, 17)
-
-#print bball
-
-#for thing in bball.findAll()
- # outFile.write()
-
-#outFile.close()
-
-#outFile.write(bball)
-#outFile.close()
