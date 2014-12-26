@@ -44,6 +44,17 @@ Float_t ptVsPerErr_[maxGames];
 Float_t ptDiffPer_[maxGames];
 Float_t ptDiffPerErr_[maxGames];
 
+void SetBBallBranches();
+void OffBBallBranches();
+void GetBBallBranches();
+void InitBBallTrees();
+void FillBBallTrees();
+void WriteBBallTrees(TFile* outFile_p);
+void CleanupBBallTrees();
+void GetBBallTrees(TFile* inFile_p);
+void GetBBallTreesEntry(Int_t entryNum);
+void InitBBallVar();
+
 void SetBBallBranches()
 {
   std::cout << "Setting stat tree branches..." << std::endl;
@@ -80,6 +91,16 @@ void SetBBallBranches()
   return;
 }
 
+
+void OffBBallBranches()
+{
+  statTree_p->SetBranchStatus("*", 0);
+  bookTree_p->SetBranchStatus("*", 0);
+
+  return;
+}
+
+
 void GetBBallBranches()
 {
   std::cout << "Getting stat tree branches..." << std::endl;
@@ -109,7 +130,7 @@ void GetBBallBranches()
 
   std::cout << "Getting book tree branches..." << std::endl;
 
-  bookTree_p->Branch("nGames", &nGames_);
+  bookTree_p->SetBranchAddress("nGames", &nGames_);
 
   return;
 }
@@ -151,13 +172,14 @@ void CleanupBBallTrees()
   return;
 }
 
-void GetBBallTrees(TFile* inFile_p)
+void GetBBallTrees(TFile* inFile_p, Bool_t isOn = true)
 {
   std::cout << "Get Trees" << std::endl;
 
   statTree_p = (TTree*)inFile_p->Get("statTree_p");
   bookTree_p = (TTree*)inFile_p->Get("bookTree_p");
-  GetBBallBranches();
+  if(isOn) GetBBallBranches();
+  else OffBBallBranches();
 
   return;
 }
