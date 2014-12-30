@@ -51,10 +51,10 @@ int makeBBallIDFile(const std::string inName, const Int_t year)
   Int_t nEntries = statTree_p->GetEntries();
 
   std::ofstream outFile;
-  outFile.open(Form("csvDir/%s_%d.csv", outName.c_str(), year));
+  outFile.open(Form("csvDir/%dID.csv", year));
   outFile.close();
 
-  outFile.open(Form("csvDir/%s_%d.csv", outName.c_str(), year), std::ios_base::app);
+  outFile.open(Form("csvDir/%dID.csv", year), std::ios_base::app);
 
   std::vector<Long64_t>* duplicate_p = new std::vector<Long64_t>;
 

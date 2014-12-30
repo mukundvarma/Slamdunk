@@ -3,23 +3,27 @@
 #include "BBallTrees.h"
 #include "getMean.h"
 
-int makeBBallTrees(const std::string fList , const std::string outName);
+int makeBBallTrees(const std::string fList , const std::string outName, const std::string fList2);
 Long64_t getGameID(const Int_t year, const Int_t month, const Int_t day, const Int_t teamNum, const Int_t teamNumVs, const Bool_t isHome);
 
 int main(int argc, char* argv[])
 {
-  if(argc != 3){
-    std::cout << "usage: makeBBallTrees <inputList> <outName>" << std::endl;
+  if(argc != 3 && argc != 4){
+    std::cout << "usage: makeBBallTrees <inputList> <outName> <inputList2 (opt)>" << std::endl;
     return 1;
   }
 
   int jobStatus = -1;
-  jobStatus = makeBBallTrees(argv[1], argv[2]);
+  if(argc == 3) jobStatus = makeBBallTrees(argv[1], argv[2], "");
+  else jobStatus = makeBBallTrees(argv[1], argv[2], argv[3]);
   return jobStatus;
 }
 
-int makeBBallTrees(const std::string fList, const std::string outName)
+int makeBBallTrees(const std::string fList, const std::string outName, const std::string fList2 = "")
 {
+  Bool_t fullSet = false;
+  if(strcmp("", fList2.c_str()) != 0) fullSet = true;
+
   std::string buffer;
   std::vector<std::string> listOfFiles;
   std::ifstream inFile(fList.data());
@@ -27,7 +31,7 @@ int makeBBallTrees(const std::string fList, const std::string outName)
   std::cout << "inList: " << fList << std::endl;
 
   if(!inFile.is_open()){
-    std::cout << "Error opening file. Exiting." << std::endl;
+    std::cout << "Error opening file 1. Exiting." << std::endl;
     return 1;
   }
   else{
@@ -41,7 +45,7 @@ int makeBBallTrees(const std::string fList, const std::string outName)
   std::cout << "FileList Loaded." << std::endl;
 
   TFile* outFile_p = new TFile(Form("%s.root", outName.c_str()), "UPDATE");
-  InitBBallTrees();
+  InitBBallTrees(fullSet);
 
   for(Int_t fileIter = 0; fileIter < (Int_t)(listOfFiles.size()); fileIter++){
     if(fileIter%1 == 0) std::cout << "File Number: " << fileIter << std::endl;
@@ -63,7 +67,7 @@ int makeBBallTrees(const std::string fList, const std::string outName)
       }
     }
 
-    year_ = std::atoi(fileStr.substr(3, 7).c_str());
+    year_ = std::atoi(fileStr.substr(3, 4).c_str());
 
     std::ifstream csvFile(listOfFiles[fileIter].c_str());
     std::string outVal;
@@ -120,6 +124,49 @@ int makeBBallTrees(const std::string fList, const std::string outName)
       nGames_++;
     }
 
+    if(fullSet){
+      std::cout << fList2 << std::endl;
+      std::ifstream inFile2(fList2.data());
+
+      if(!inFile2.is_open()){
+	std::cout << "Error opening file 2. Exiting." << std::endl;
+	return 1;
+      }
+      else{
+	while(true){
+	  inFile2 >> buffer;
+	  std::size_t strIndex2 = buffer.find(Form("%d",year_));
+	  if(inFile2.eof()) break;
+	  if(strIndex2 != std::string::npos) break;
+	}
+      }
+
+      std::string compTeamStr = Form("%d",teamNum_);
+      if(teamNum_ < 10) compTeamStr = Form("0%d", teamNum_);
+
+      for(Int_t iter = 0; iter < nGames_; iter++){
+	std::ifstream csvFile2(buffer.c_str());
+
+	while(true){
+	  std::getline(csvFile2, outVal, ',');
+	  if(csvFile2.eof()) break;
+
+	  if(!strcmp(outVal.c_str(), Form("%lld", gameID_[iter]))){
+	    std::cout << outVal << std::endl;
+
+	    if(!strcmp(compTeamStr.c_str(), outVal.substr(outVal.size()-4, 2).c_str())) std::cout << outVal.substr(outVal.size()-4, 2).c_str() << std::endl;
+	    else std::cout << outVal.substr(outVal.size()-2, 2).c_str() << std::endl;
+
+	    break;
+	  }
+	  else std::getline(csvFile2, outVal);
+	}
+
+
+      }
+    }
+
+    std::cout << "year: " << buffer << std::endl;
     FillBBallTrees();
   }
 

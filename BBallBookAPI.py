@@ -92,7 +92,7 @@ def getDateLines(year, month, day):
               OU = str(thing3)[start+1:end+1]
           counter3 += 1
       counter2 += 1
-    outFile.write(str(getCorrDate(year,month,day) + 100*homeNum + 1*awayNum) + "," + OU + "," + Odds + "\n")
+    outFile.write(str(getCorrDate(year,month,day) + 100*homeNum + 1*awayNum) + "," + OU + "," + Odds + ",\n")
  
   outFile.close()
 
@@ -125,6 +125,7 @@ if cutMonth > 6:
 
 for year in years:
   outFile = open('csvDir/%dlines.csv' % year, 'w')
+  outFile.close()
 
 for year in years:
   for month in months:

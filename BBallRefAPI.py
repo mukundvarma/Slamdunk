@@ -25,27 +25,10 @@ def getTagStr(inStr):
   return inStr[start+1:end+1]
 
 
-def convertTeamStr(inStr):
-  if inStr == 'NJN':
-    return 'BRK'
-  elif inStr == 'CHA':
-    return 'CHO'
-  elif inStr == 'NOH':
-    return 'NOP'
-  elif inStr == 'NOK':
-    return 'NOP'
-  elif inStr == 'SEA':
-    return 'OKC'
-  else:
-    return inStr
-
-
-
-
 def getTeamStr(inStr):
   for num in range(0, len(inStr)):
     if inStr[num:num+5] == 'teams':
-        return convertTeamStr(inStr[num+6:num+9])
+        return BBallRefID.convertTeamStr(inStr[num+6:num+9])
 
 
 def writeCSVFile(teamName, year):
@@ -111,13 +94,3 @@ if(len(sys.argv) != 3):
 for team in BBallRefID.teams:
   for num in range(int(sys.argv[1]),int(sys.argv[2])+1):
     writeCSVFile(team, num)
-
-#writeCSVFile("ATL", 2014)
-
-#for thing in bball.findAll()
- # outFile.write()
-
-#outFile.close()
-
-#outFile.write(bball)
-#outFile.close()

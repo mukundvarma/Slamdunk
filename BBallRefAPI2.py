@@ -35,7 +35,7 @@ def getBBallRef2(year):
     start = 1
     end = 10
 
-  outFile = open("%dtestDIS.csv" % year, "w")
+  outFile = open("csvDir/%dGameStats.csv" % year, "w")
   outFile.close()
 
   for line in gameTag:
@@ -68,8 +68,10 @@ def getBBallRef2(year):
     print 'http://www.basketball-reference.com/boxscores/%d%s%s0%s.html' % (getYear, month, day, BBallRefID.getWebStr(homeTeam, year))
 #    print bball
 
-    outFile = open("%dtestDIS.csv" % year, "a")
+    outFile = open("csvDir/%dGameStats.csv" % year, "a")
     outFile.write(str(gameID) + ',')
+
+    teamCounter = 0
 
     for thing in bball.findAll('tr'):
 #      print "counter: " + str(counter)
@@ -80,11 +82,17 @@ def getBBallRef2(year):
         continue
 
       scoreBool = False
+      teamBool = False
 
       for thing2 in thing.findAll('td'):
         for thing3 in thing2.findAll('th'):          
           if getTagStr(str(thing3)) == 'Scoring':
             scoreBool = True
+
+        if getTagStr(str(thing2)) == 'Team Totals':
+          teamCounter+=1
+          if teamCounter == 1 or teamCounter == 3:
+            teamBool = True
 
       if scoreBool:
         for thing2 in thing.findAll('td'):
@@ -100,8 +108,16 @@ def getBBallRef2(year):
                 continue
               outFile.write(getTagStr(str(thing4))+',')
             outFile.write(',')
-          outFile.write('\n')
           break
+
+      if teamBool == True:
+        counter2 = 0
+        for thing2 in thing.findAll('td'):
+          counter2 += 1
+          if counter2 > 1:
+            outFile.write(getTagStr(str(thing2)) + ',')
+        if teamCounter == 3:
+          outFile.write('\n')        
 
   outFile.close()
 
